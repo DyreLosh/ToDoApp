@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">ToDoApp</string>
+    <string name="home_main_text">Let’s get things done on time</string>
+    <string name="home_second_text">\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tellus praesent purus tincidunt ut cursus vitae. Nisl, vitae nulla lectus tortor, est a aliquam. Pretium netus \"</string>
+    <string name="title_activity_register">RegisterActivity</string>
 </resources>
