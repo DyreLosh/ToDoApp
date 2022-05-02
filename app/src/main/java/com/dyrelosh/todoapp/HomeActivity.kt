@@ -43,7 +43,7 @@ class HomeActivity : ComponentActivity() {
         }
     }
 
-    @Preview
+    @Preview(showBackground = true, showSystemUi = true)
     @Composable
     fun HomeAct() {
         Image(
