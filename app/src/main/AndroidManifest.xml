@@ -11,20 +11,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoApp">
         <activity
-            android:name=".RegisterActivity"
+            android:name=".ui.layout.activity.RegisterActivity"
             android:exported="false"
             android:label="@string/title_activity_register"
             android:theme="@style/Theme.ToDoApp" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".ui.layout.activity.LoginActivity"
             android:exported="false"
             android:theme="@style/Theme.ToDoApp" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.layout.activity.MainActivity"
             android:exported="false"
             android:theme="@style/Theme.ToDoApp" />
         <activity
-            android:name=".HomeActivity"
+            android:name=".ui.layout.activity.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.ToDoApp">
             <intent-filter>
