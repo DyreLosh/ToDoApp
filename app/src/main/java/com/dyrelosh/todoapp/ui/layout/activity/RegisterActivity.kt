@@ -1,7 +1,10 @@
 package com.dyrelosh.todoapp.ui.layout.activity
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Patterns
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -32,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -39,8 +43,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dyrelosh.todoapp.R
+import com.dyrelosh.todoapp.data.https.ApiService
+import com.dyrelosh.todoapp.data.model.Token
+import com.dyrelosh.todoapp.data.model.UserCreate
 import com.dyrelosh.todoapp.ui.theme.ToDoAppTheme
 import com.dyrelosh.todoapp.ui.theme.Yellow
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import javax.net.ssl.HttpsURLConnection
 
 class RegisterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,18 +80,18 @@ class RegisterActivity : ComponentActivity() {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Welcome Onboard!",
+                text = stringResource(R.string.register_main_text),
                 fontWeight = FontWeight.Bold,
                 fontFamily = FontFamily(Font(R.font.poppins))
             )
             Text(
-                text = "We help yiu meet up you tasks on time.",
+                text = stringResource(R.string.register_second_text),
                 fontFamily = FontFamily(Font(R.font.poppins))
             )
             OutlinedTextField(
                 value = name.value,
                 onValueChange = { newText -> name.value = newText},
-                placeholder = { Text(text = "Name")},
+                placeholder = { Text(text = stringResource(R.string.name_hint))},
                 singleLine = true,
                 shape = RoundedCornerShape(50) ,
                 leadingIcon = { Icon(Icons.Filled.Person, contentDescription = "")},
@@ -92,7 +103,7 @@ class RegisterActivity : ComponentActivity() {
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { newText -> email.value = newText},
-                placeholder = { Text(text = "Email")},
+                placeholder = { Text(text = stringResource(R.string.email_hint))},
                 singleLine = true,
                 shape = RoundedCornerShape(50) ,
                 leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "")},
@@ -104,7 +115,7 @@ class RegisterActivity : ComponentActivity() {
                 value = password.value,
                 onValueChange = { newText -> password.value = newText},
                 shape = RoundedCornerShape(50) ,
-                placeholder = { Text(text = "Password")},
+                placeholder = { Text(text = stringResource(R.string.password_hint))},
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "")},
                 modifier = Modifier
@@ -115,7 +126,7 @@ class RegisterActivity : ComponentActivity() {
                 value = confirmPassword.value,
                 onValueChange = { newText -> confirmPassword.value = newText},
                 shape = RoundedCornerShape(50) ,
-                placeholder = { Text(text = "Confirm password")},
+                placeholder = { Text(text = stringResource(R.string.confirm_password_hint))},
                 singleLine = true,
                 leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "")},
                 modifier = Modifier
@@ -132,8 +143,18 @@ class RegisterActivity : ComponentActivity() {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
                 onClick = {
-                    startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
-
+                    when {
+                        name.value.isBlank() && email.value.isBlank()
+                                &&password.value.isBlank() && confirmPassword.value.isBlank() ->
+                            alertDialogBuilder(getString(R.string.blank_field_error))
+                        !Patterns.EMAIL_ADDRESS.matcher(email.value).matches() ->
+                            alertDialogBuilder(getString(R.string.true_email_error))
+                        password.value.length < 8 ->
+                            alertDialogBuilder(getString(R.string.password_more_8_error))
+                        password.value != confirmPassword.value ->
+                            alertDialogBuilder(getString(R.string.confirm_password_error))
+                        else -> userCreate(name.value, email.value, password.value)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),
                 contentPadding = PaddingValues(vertical = 18.dp),
@@ -159,14 +180,50 @@ class RegisterActivity : ComponentActivity() {
                 text = "Sign In",
                 color = Yellow,
                 fontFamily = FontFamily(Font(R.font.poppins)),
-                modifier = Modifier.clickable {
-                    startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
-                }
+                modifier = Modifier
+                    .clickable {
+                        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                    }
                     .padding(bottom = 10.dp)
-
             )
-
         }
+    }
+
+    private fun alertDialogBuilder(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Ошибка")
+            .setMessage(message)
+            .setPositiveButton("Ok", null)
+            .create()
+            .show()
+    }
+
+    private fun userCreate(name: String, email: String, password: String) {
+
+        ApiService.retrofit.userCreate(UserCreate(name, email, password)).enqueue(
+            object: Callback<Token> {
+                override fun onResponse(call: Call<Token>, response: Response<Token>) {
+                    if(response.isSuccessful) {
+                        startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+                        val token = response.body()!!.token
+                    }
+                    else {
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            getString(R.string.register_bad_response),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                override fun onFailure(call: Call<Token>, t: Throwable) {
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        t.localizedMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
     }
 
     @Preview(showBackground = true, showSystemUi = true)

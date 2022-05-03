@@ -5,4 +5,19 @@
     <string name="title_activity_register">RegisterActivity</string>
     <string name="login_unauthorized">Вы не зарегистрированы!</string>
     <string name="login_bad_request">Ошибка</string>
+    <string name="register_bad_response">Некоректно введены данные регистрации</string>
+    <string name="register_main_text">Welcome Onboard!</string>
+    <string name="register_second_text">We help yiu meet up you tasks on time.</string>
+    <string name="name_hint">Name</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="confirm_password_hint">Confirm password</string>
+    <string name="blank_field_error">Поле пустое</string>
+    <string name="true_email_error">Введите правильную почту</string>
+    <string name="password_more_8_error">Пароль должен быть больше 8 символов</string>
+    <string name="confirm_password_error">Пароли должны совпадать</string>
+    <string name="splash_main_text">GET STARTED</string>
+    <string name="login_main_text">Welcome Back!</string>
+    <string name="forgot_password_text_button">Forgot password</string>
+    <string name="error_text">Ошибка</string>
 </resources>

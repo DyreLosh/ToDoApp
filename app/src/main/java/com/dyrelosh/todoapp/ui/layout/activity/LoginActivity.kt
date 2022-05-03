@@ -61,7 +61,6 @@ class LoginActivity : ComponentActivity() {
         setContent {
             ToDoAppTheme {
                 PrewievLogin()
-
             }
         }
     }
@@ -84,7 +83,7 @@ class LoginActivity : ComponentActivity() {
 
         ) {
             Text(
-                text = "Welcome Back!",
+                text = stringResource(R.string.login_main_text),
                 fontWeight = Bold,
                 fontSize = 22.sp
             )
@@ -98,7 +97,7 @@ class LoginActivity : ComponentActivity() {
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { newText -> email.value = newText},
-                placeholder = { Text(text = "Email")},
+                placeholder = { Text(text = stringResource(R.string.email_hint))},
                 singleLine = true,
                 shape = RoundedCornerShape(50) ,
                 leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "")},
@@ -110,7 +109,7 @@ class LoginActivity : ComponentActivity() {
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { newText -> password.value = newText},
-                placeholder = { Text(text = "Password")},
+                placeholder = { Text(text = stringResource(R.string.password_hint))},
                 singleLine = true,
                 shape = RoundedCornerShape(50) ,
                 leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "")},
@@ -119,16 +118,13 @@ class LoginActivity : ComponentActivity() {
                     .fillMaxWidth()
             )
             Text(
-                text = "Forgot password",
+                text = stringResource(R.string.forgot_password_text_button),
                 color = Yellow,
                 fontFamily = FontFamily(Font(R.font.poppins)),
                 modifier = Modifier.padding(top = 10.dp)
             )
             Scaffold(
-                bottomBar = {
-                    BottomBar(email, password)
-                }
-            ) {}
+                bottomBar = { BottomBar(email, password) }) {}
         }
 
     }
@@ -140,21 +136,13 @@ class LoginActivity : ComponentActivity() {
         ) {
             Button(
                 onClick = {
-                    if (Patterns.EMAIL_ADDRESS.matcher(email.value).matches()
-                        && password.value.length > 8
-                    ) {
-                        userLogin(email.value, password.value)
+                    when {
+                        !Patterns.EMAIL_ADDRESS.matcher(email.value).matches() ->
+                            alertBuilderLogin(getString(R.string.true_email_error))
+                        password.value.length < 8 && password.value.isBlank() ->
+                            alertBuilderLogin(getString(R.string.password_more_8_error))
+                        else ->  userLogin(email.value, password.value)
                     }
-                    else {
-                        android.app.AlertDialog.Builder(this@LoginActivity)
-                            .setTitle("Ошибка")
-                            .setMessage("Введите правильную почту и пароль с более 8 символами!")
-                            .setPositiveButton("", null)
-                            .create()
-                            .show()
-
-                    }
-
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),
                 contentPadding = PaddingValues(vertical = 18.dp),
@@ -186,8 +174,17 @@ class LoginActivity : ComponentActivity() {
                     }
                     .padding(bottom = 10.dp)
             )
-            }
         }
+    }
+
+    private fun alertBuilderLogin(message: String) {
+        android.app.AlertDialog.Builder(this@LoginActivity)
+            .setTitle(getString(R.string.error_text))
+            .setMessage(message)
+            .setPositiveButton("Ok", null)
+            .create()
+            .show()
+    }
 
     private fun userLogin(email: String, password: String) {
         ApiService.retrofit.userLogin(UserLogin(email, password)).enqueue(
@@ -215,32 +212,12 @@ class LoginActivity : ComponentActivity() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-
                     }
                 }
-
                 override fun onFailure(call: Call<Token>, t: Throwable) {
                     Toast.makeText(this@LoginActivity, t.localizedMessage, Toast.LENGTH_SHORT).show()
                 }
-
             }
-        )
-    }
-
-
-    @Composable
-    fun PressLoginDialog() {
-        AlertDialog(
-            onDismissRequest = { /*TODO*/ },
-            title = { Text(text = "Ошибка")},
-            text = { Text(text = "Введите правильную почту и пароль с более 8 символами!")},
-            confirmButton = {
-                Button(
-                    onClick = { /*TODO*/ }) {
-                    Text(text = "Ok")
-                }
-            }
-
         )
     }
 }
