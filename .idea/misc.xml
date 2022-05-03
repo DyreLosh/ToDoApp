@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Admin/Desktop/Android Projects/ToDoApp/app/src/main/res/drawable/ic_email.xml" value="0.1365" />
+        <entry key="..\:/Users/Admin/Desktop/Android Projects/ToDoApp/app/src/main/res/drawable/ic_lock.xml" value="0.1365" />
+        <entry key="..\:/Users/Admin/Desktop/Android Projects/ToDoApp/app/src/main/res/drawable/ic_person.xml" value="0.1365" />
         <entry key="..\:/Users/Admin/Desktop/Android Projects/ToDoApp/app/src/main/res/font/poppins.xml" value="0.35" />
       </map>
     </option>

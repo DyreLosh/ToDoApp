@@ -14,10 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -73,32 +75,36 @@ class HomeActivity : ComponentActivity() {
                 modifier = Modifier
                     .padding(start = 30.dp, end = 30.dp, top = 20.dp)
             )
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(top = 50.dp)
-                    .fillMaxWidth()
-            ) {
-                Button(
-                    onClick = {
-                        startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),
-                    contentPadding = PaddingValues(vertical = 18.dp),
-                    shape = RoundedCornerShape(20),
+            Scaffold(
+                bottomBar = {
+                    Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
+                        .padding(bottom = 50.dp)
                         .fillMaxWidth()
-                        .padding(horizontal = 30.dp, vertical = 0.dp)
                 ) {
-                    Text(
-                        text = "GET STARTED",
-                        fontSize = 20.sp,
-                        fontWeight = Bold,
-                        fontFamily = FontFamily(Font(R.font.poppins))
-                    )
-                }
+                    Button(
+                        onClick = {
+                            startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                        },
+                        colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),
+                        contentPadding = PaddingValues(vertical = 18.dp),
+                        shape = RoundedCornerShape(20),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 30.dp, vertical = 0.dp)
+                    ) {
+                        Text(
+                            text = "GET STARTED",
+                            fontSize = 20.sp,
+                            fontWeight = Bold,
+                            color = Color.Black,
+                            fontFamily = FontFamily(Font(R.font.poppins))
+                        )
+                    }
+                }}
+            ) {
             }
         }
-
     }
 }

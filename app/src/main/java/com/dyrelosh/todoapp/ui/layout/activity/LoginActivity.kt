@@ -1,5 +1,6 @@
 package com.dyrelosh.todoapp.ui.layout.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -7,8 +8,10 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,22 +19,31 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.dyrelosh.todoapp.R
 import com.dyrelosh.todoapp.data.https.ApiService
 import com.dyrelosh.todoapp.data.model.Token
@@ -86,17 +98,25 @@ class LoginActivity : ComponentActivity() {
             OutlinedTextField(
                 value = email.value,
                 onValueChange = { newText -> email.value = newText},
-                shape = RoundedCornerShape(10) ,
-
+                placeholder = { Text(text = "Email")},
+                singleLine = true,
+                shape = RoundedCornerShape(50) ,
+                leadingIcon = { Icon(Icons.Filled.Email, contentDescription = "")},
                 modifier = Modifier
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                    .padding(top = 20.dp, start = 40.dp, end = 40.dp)
+                    .fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = password.value,
                 onValueChange = { newText -> password.value = newText},
+                placeholder = { Text(text = "Password")},
+                singleLine = true,
+                shape = RoundedCornerShape(50) ,
+                leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "")},
                 modifier = Modifier
-                    .padding(top = 10.dp, end = 20.dp, start = 20.dp)
+                    .padding(top = 10.dp, end = 40.dp, start = 40.dp)
+                    .fillMaxWidth()
             )
             Text(
                 text = "Forgot password",
@@ -104,7 +124,20 @@ class LoginActivity : ComponentActivity() {
                 fontFamily = FontFamily(Font(R.font.poppins)),
                 modifier = Modifier.padding(top = 10.dp)
             )
+            Scaffold(
+                bottomBar = {
+                    BottomBar(email, password)
+                }
+            ) {}
+        }
 
+    }
+
+    @Composable
+    private fun BottomBar(email: MutableState<String>, password: MutableState<String>) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Button(
                 onClick = {
                     if (Patterns.EMAIL_ADDRESS.matcher(email.value).matches()
@@ -134,6 +167,7 @@ class LoginActivity : ComponentActivity() {
                     text = "Sign In",
                     fontSize = 20.sp,
                     fontWeight = Bold,
+                    color = Color.Black,
                     fontFamily = FontFamily(Font(R.font.poppins))
                 )
             }
@@ -142,16 +176,18 @@ class LoginActivity : ComponentActivity() {
                 color = Color.Black,
                 fontFamily = FontFamily(Font(R.font.poppins))
             )
-            TextButton(
-                onClick = {
-                startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
-            }) {
-                Text(text = "Sign Up",
-                    color = Yellow,
-                    fontFamily = FontFamily(Font(R.font.poppins)))
+            Text(
+                text = "Sign Up",
+                color = Yellow,
+                fontFamily = FontFamily(Font(R.font.poppins)),
+                modifier = Modifier
+                    .clickable {
+                        startActivity(Intent(this@LoginActivity, RegisterActivity::class.java))
+                    }
+                    .padding(bottom = 10.dp)
+            )
             }
         }
-    }
 
     private fun userLogin(email: String, password: String) {
         ApiService.retrofit.userLogin(UserLogin(email, password)).enqueue(
