@@ -25,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -40,7 +39,6 @@ import com.dyrelosh.todoapp.ui.theme.Yellow
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import javax.net.ssl.HttpsURLConnection
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable

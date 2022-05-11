@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Space
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -24,6 +26,7 @@ import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -105,28 +108,16 @@ fun TasksScreen(navController: NavHostController, mainNavController: NavControll
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
-                    .padding(top = 5.dp, bottom = 10.dp
+                    .padding(
+                        top = 5.dp, bottom = 10.dp
                     )
             ) {
-
                 if(taskList != null) {
                     for (item in taskList) {
-                        TaskCard(taskResponse = item)
+                        TaskCard(taskResponse = item, preferenceManager, context)
                     }
                 } else {
-                    Text(
-                        text = "Content to display after content has loaded",
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .placeholder(
-                                visible = true,
-                                color = Color.Gray,
-                                shape = RoundedCornerShape(4.dp),
-                                highlight = PlaceholderHighlight.fade(
-                                    highlightColor = Color.White,
-                                ),
-                            )
-                    )
+                    PlaceholderCard()
                 }
             }
         }
@@ -145,35 +136,44 @@ fun TasksScreen(navController: NavHostController, mainNavController: NavControll
 
 }
 @Composable
-fun TaskCard(taskResponse: TaskResponse) {
+fun TaskCard(taskResponse: TaskResponse, preferenceManager: PreferenceManager, context: Context) {
     var checkbox by remember { mutableStateOf(taskResponse.isCompleted)}
+    var isExpanded by remember { mutableStateOf(false)}
     Card(
         shape = RoundedCornerShape(5.dp),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 3.dp)
             .clickable {
-
+                isExpanded = !isExpanded
             },
         elevation = 5.dp
     ) {
         Row(modifier = Modifier.padding(vertical = 5.dp)) {
             Checkbox(
                 checked = checkbox,
-                onCheckedChange = { checkbox = it},
+                onCheckedChange = {
+                    checkbox = it
+                    checkTask(preferenceManager, taskResponse, context)
+                },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Yellow
                 ),
 
-                modifier = Modifier
+                modifier = Modifier.align(CenterVertically)
             )
-            Text(
-                text = taskResponse.text,
-                maxLines = 1,
-                fontFamily = FontFamily(Font(R.font.poppins)),
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.align(CenterVertically).padding(end = 10.dp)
-            )
+            Row(modifier = Modifier.animateContentSize().padding(1.dp).align(CenterVertically)) {
+                Text(
+                    text = taskResponse.text,
+                    maxLines = if(isExpanded) Int.MAX_VALUE else 1,
+                    fontFamily = FontFamily(Font(R.font.poppins)),
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .align(CenterVertically)
+                        .padding(end = 10.dp)
+                )
+            }
+
         }
     }
 
@@ -207,4 +207,64 @@ fun TopTasksBar(context:Context, mainNavController: NavController){
         }
 
     }
+}
+
+@Composable
+fun PlaceholderCard() {
+    Card(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 20.dp)
+        .placeholder(
+            visible = true,
+            color = Color.Gray,
+            shape = RoundedCornerShape(4.dp),
+            highlight = PlaceholderHighlight.fade(
+                highlightColor = Color.White,
+            ),
+        )) {
+        Text(text = "df", Modifier.padding(vertical = 15.dp))
+    }
+}
+
+fun checkTask(preferenceManager: PreferenceManager, taskResponse: TaskResponse, context: Context) {
+    ApiService.retrofit
+        .markTodo("Bearer ${preferenceManager.readLoginPreference()}", taskResponse.id)
+        .enqueue(
+            object : Callback<Unit> {
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    when (response.code()) {
+                        HttpsURLConnection.HTTP_OK -> {
+                            Toast
+                                .makeText(context, "Успешно", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        HttpsURLConnection.HTTP_BAD_REQUEST -> {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Задача с указанным id не найдена",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        }
+                        HttpsURLConnection.HTTP_UNAUTHORIZED -> {
+                            Toast
+                                .makeText(
+                                    context,
+                                    "Неккорктный токен доступа",
+                                    Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Toast
+                        .makeText(context, t.localizedMessage, Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+            }
+        )
 }

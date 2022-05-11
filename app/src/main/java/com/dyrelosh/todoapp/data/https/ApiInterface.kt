@@ -10,6 +10,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Query
 
 interface ApiInterface {
 
@@ -27,5 +29,11 @@ interface ApiInterface {
     fun addNewTask(
         @Header("Authorization") token: String,
         @Body newTask: NewTask
+    ) : Call<Unit>
+
+    @PUT("todos/mark")
+    fun markTodo(
+        @Header("Authorization") token: String,
+        @Query("id") id: Int
     ) : Call<Unit>
 }
