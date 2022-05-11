@@ -1,5 +1,6 @@
 package com.dyrelosh.todoapp.data.https
 
+import com.dyrelosh.todoapp.data.model.NewTask
 import com.dyrelosh.todoapp.data.model.TaskResponse
 import com.dyrelosh.todoapp.data.model.Token
 import com.dyrelosh.todoapp.data.model.UserCreate
@@ -22,4 +23,9 @@ interface ApiInterface {
     fun getTasks(
         @Header("Authorization") token: String
     ): Call<List<TaskResponse>>
+    @POST("todos")
+    fun addNewTask(
+        @Header("Authorization") token: String,
+        @Body newTask: NewTask
+    ) : Call<Unit>
 }

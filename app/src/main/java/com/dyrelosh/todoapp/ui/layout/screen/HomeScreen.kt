@@ -1,5 +1,6 @@
-package com.dyrelosh.todoapp.ui.layout.activity
+package com.dyrelosh.todoapp.ui.layout.screen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -30,10 +32,17 @@ import com.dyrelosh.todoapp.R
 import com.dyrelosh.todoapp.common.PreferenceManager
 import com.dyrelosh.todoapp.common.navigation.StartScreen
 import com.dyrelosh.todoapp.ui.theme.Yellow
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun HomeAct(navController: NavHostController) {
     val context = LocalContext.current
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(
+        color = Color.Transparent,
+        darkIcons = MaterialTheme.colors.isLight,
+    )
     Image(
         painter = painterResource(R.drawable.background_circle_image),
         contentDescription = "",
@@ -97,7 +106,6 @@ fun HomeAct(navController: NavHostController) {
                         )
                     }
                 }}
-        ) {
-        }
+        ) { }
     }
 }

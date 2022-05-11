@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.dyrelosh.todoapp.common.navigation.Navigation
-import com.dyrelosh.todoapp.ui.layout.activity.ui.theme.ToDoAppTheme
+import com.dyrelosh.todoapp.ui.theme.ToDoAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
