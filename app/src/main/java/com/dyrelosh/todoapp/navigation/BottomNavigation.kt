@@ -9,10 +9,10 @@ import com.dyrelosh.todoapp.ui.layout.screen.ProfileScreen
 import com.dyrelosh.todoapp.ui.layout.screen.TasksScreen
 
 @Composable
-fun BottomNavigation(navController: NavController) {
+fun BottomNavigation(navController: NavController, mainNavController: NavController) {
 
     NavHost(navController = navController as NavHostController, startDestination = Screen.TaskScreen.route) {
-        composable(Screen.TaskScreen.route) { TasksScreen(navController) }
+        composable(Screen.TaskScreen.route) { TasksScreen(navController, mainNavController) }
         composable(Screen.ProfileScreen.route) { ProfileScreen() }
     }
 }

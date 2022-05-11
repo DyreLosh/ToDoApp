@@ -29,19 +29,19 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.dyrelosh.todoapp.R
 import com.dyrelosh.todoapp.common.PreferenceManager
 import com.dyrelosh.todoapp.data.https.ApiService
 import com.dyrelosh.todoapp.data.model.TaskResponse
-import com.dyrelosh.todoapp.ui.layout.activity.RegisterActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.net.ssl.HttpsURLConnection
 
 @Composable
-fun TasksScreen(navController: NavHostController) {
+fun TasksScreen(navController: NavHostController, mainNavController: NavController) {
 
     val context = LocalContext.current
     val _taskList = remember { mutableStateOf<List<TaskResponse>?>(null)}
@@ -59,6 +59,8 @@ fun TasksScreen(navController: NavHostController) {
                     }
                     HttpsURLConnection.HTTP_UNAUTHORIZED -> {
                         Toast.makeText(context, "Пользователь не авторизован", Toast.LENGTH_SHORT).show()
+                        preferenceManager.deleteLoginPreference()
+                        navController.popBackStack()
                     }
                     HttpsURLConnection.HTTP_BAD_REQUEST -> {
                         Toast.makeText(context, "Ошибка запроса", Toast.LENGTH_SHORT).show()
@@ -75,7 +77,7 @@ fun TasksScreen(navController: NavHostController) {
 
     Box {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            TopTasksBar(context)
+            TopTasksBar(context, mainNavController)
             if(taskList != null) {
                 for (item in taskList) {
                     TaskCard(taskResponse = item)
@@ -93,7 +95,7 @@ fun TaskCard(taskResponse: TaskResponse) {
     }
 }
 @Composable
-fun TopTasksBar(context:Context){
+fun TopTasksBar(context:Context, mainNavController: NavController){
     TopAppBar(
         backgroundColor = Color.White
     ) {
@@ -113,7 +115,9 @@ fun TopTasksBar(context:Context){
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .clickable {
-                        context.startActivity(Intent(context, RegisterActivity::class.java))
+                        val preferenceManager = PreferenceManager(context)
+                        preferenceManager.deleteLoginPreference()
+                        mainNavController.popBackStack()
                     }
             )
         }
