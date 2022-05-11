@@ -1,4 +1,4 @@
-package com.dyrelosh.todoapp.navigation
+package com.dyrelosh.todoapp.common.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController

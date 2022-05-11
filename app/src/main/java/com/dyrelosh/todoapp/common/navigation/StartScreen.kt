@@ -1,4 +1,4 @@
-package com.dyrelosh.todoapp.navigation
+package com.dyrelosh.todoapp.common.navigation
 
 sealed class StartScreen(var route: String) {
     object HomeScreen: StartScreen("home_screen")

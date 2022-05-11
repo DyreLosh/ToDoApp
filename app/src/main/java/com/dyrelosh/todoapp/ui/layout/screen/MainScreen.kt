@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.dyrelosh.todoapp.navigation.Screen
+import com.dyrelosh.todoapp.common.navigation.Screen
 import com.dyrelosh.todoapp.ui.theme.Yellow
 
 @Composable
@@ -24,7 +24,7 @@ fun MainScreen(mainNavController: NavHostController) {
             BottomNavigation(navController = navController)
         }
     ) {
-        com.dyrelosh.todoapp.navigation.BottomNavigation(navController, mainNavController)
+        com.dyrelosh.todoapp.common.navigation.BottomNavigation(navController, mainNavController)
     }
 }
 
