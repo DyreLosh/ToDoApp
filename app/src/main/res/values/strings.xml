@@ -20,4 +20,8 @@
     <string name="login_main_text">Welcome Back!</string>
     <string name="forgot_password_text_button">Forgot password</string>
     <string name="error_text">Ошибка</string>
+    <string name="sign_button">Sign In</string>
+    <string name="have_account_text">Already have an account?</string>
+    <string name="sign_in_text_button">Sign In</string>
+    <string name="title_activity_tasks_activty">TasksActivty</string>
 </resources>

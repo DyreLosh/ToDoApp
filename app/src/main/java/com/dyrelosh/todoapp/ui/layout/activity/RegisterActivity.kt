@@ -43,6 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dyrelosh.todoapp.R
+import com.dyrelosh.todoapp.common.PreferenceManager
 import com.dyrelosh.todoapp.data.https.ApiService
 import com.dyrelosh.todoapp.data.model.Token
 import com.dyrelosh.todoapp.data.model.UserCreate
@@ -135,11 +136,17 @@ class RegisterActivity : ComponentActivity() {
             )
             Scaffold (bottomBar = { BottomRegisterBar(name, email, password, confirmPassword) }) {}
 
+
         }
     }
 
     @Composable
-    private fun BottomRegisterBar(name: MutableState<String>, email: MutableState<String>, password: MutableState<String>, confirmPassword: MutableState<String>) {
+    private fun BottomRegisterBar(
+        name: MutableState<String>,
+        email: MutableState<String>,
+        password: MutableState<String>,
+        confirmPassword: MutableState<String>
+    ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Button(
                 onClick = {
@@ -164,7 +171,7 @@ class RegisterActivity : ComponentActivity() {
                     .padding(horizontal = 30.dp, vertical = 10.dp)
             ) {
                 Text(
-                    text = "Sign In",
+                    text = stringResource(R.string.sign_button),
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
@@ -172,17 +179,20 @@ class RegisterActivity : ComponentActivity() {
                 )
             }
             Text(
-                text = "Already have an account?",
+                text = stringResource(R.string.have_account_text),
                 color = Color.Black,
                 fontFamily = FontFamily(Font(R.font.poppins))
             )
             Text(
-                text = "Sign In",
+                text = stringResource(R.string.sign_in_text_button),
                 color = Yellow,
                 fontFamily = FontFamily(Font(R.font.poppins)),
                 modifier = Modifier
                     .clickable {
-                        startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                        startActivity(Intent(
+                            this@RegisterActivity,
+                            LoginActivity::class.java
+                        ))
                     }
                     .padding(bottom = 10.dp)
             )
@@ -191,7 +201,7 @@ class RegisterActivity : ComponentActivity() {
 
     private fun alertDialogBuilder(message: String) {
         AlertDialog.Builder(this)
-            .setTitle("Ошибка")
+            .setTitle(getString(R.string.error_text))
             .setMessage(message)
             .setPositiveButton("Ok", null)
             .create()
@@ -204,8 +214,13 @@ class RegisterActivity : ComponentActivity() {
             object: Callback<Token> {
                 override fun onResponse(call: Call<Token>, response: Response<Token>) {
                     if(response.isSuccessful) {
-                        startActivity(Intent(this@RegisterActivity, MainActivity::class.java))
+                        startActivity(Intent(
+                            this@RegisterActivity,
+                            MainActivity::class.java
+                        ))
+                        val preferenceManager = PreferenceManager(this@RegisterActivity)
                         val token = response.body()!!.token
+                        preferenceManager.writeLoginPreference(token)
                     }
                     else {
                         Toast.makeText(

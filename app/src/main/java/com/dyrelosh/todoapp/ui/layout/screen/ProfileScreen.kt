@@ -7,4 +7,5 @@ import androidx.compose.runtime.Composable
 fun ProfileScreen() {
 
     Text(text = "Profile")
+
 }

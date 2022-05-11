@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.dyrelosh.todoapp.R
+import com.dyrelosh.todoapp.common.PreferenceManager
 import com.dyrelosh.todoapp.ui.theme.ToDoAppTheme
 import com.dyrelosh.todoapp.ui.theme.Yellow
 
@@ -86,7 +87,15 @@ class HomeActivity : ComponentActivity() {
                 ) {
                     Button(
                         onClick = {
-                            startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                            val preferenceManager = PreferenceManager(this@HomeActivity)
+                            if(preferenceManager.readLoginPreference().isNotBlank()) {
+                                startActivity(Intent(this@HomeActivity, MainActivity::class.java))
+                            }
+                            else {
+                                startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                            }
+
+                            //startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
                         },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),
                         contentPadding = PaddingValues(vertical = 18.dp),
