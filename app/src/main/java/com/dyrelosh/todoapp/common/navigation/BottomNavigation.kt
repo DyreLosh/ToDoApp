@@ -1,5 +1,6 @@
 package com.dyrelosh.todoapp.common.navigation
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -8,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.dyrelosh.todoapp.ui.layout.screen.ProfileScreen
 import com.dyrelosh.todoapp.ui.layout.screen.TasksScreen
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun BottomNavigation(navController: NavController, mainNavController: NavController) {
 

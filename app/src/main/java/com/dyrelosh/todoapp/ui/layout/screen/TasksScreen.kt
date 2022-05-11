@@ -5,7 +5,11 @@ import android.content.Intent
 import android.widget.Space
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.DismissValue
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
@@ -32,6 +37,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +49,8 @@ import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerHoverIcon
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -66,6 +74,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import javax.net.ssl.HttpsURLConnection
 
+@ExperimentalFoundationApi
 @Composable
 fun TasksScreen(navController: NavHostController, mainNavController: NavController) {
 
@@ -117,7 +126,10 @@ fun TasksScreen(navController: NavHostController, mainNavController: NavControll
                         TaskCard(taskResponse = item, preferenceManager, context)
                     }
                 } else {
-                    PlaceholderCard()
+                    for (ite in 10..20) {
+                        PlaceholderCard()
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
             }
         }
@@ -135,6 +147,7 @@ fun TasksScreen(navController: NavHostController, mainNavController: NavControll
     }
 
 }
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TaskCard(taskResponse: TaskResponse, preferenceManager: PreferenceManager, context: Context) {
     var checkbox by remember { mutableStateOf(taskResponse.isCompleted)}
@@ -143,10 +156,16 @@ fun TaskCard(taskResponse: TaskResponse, preferenceManager: PreferenceManager, c
         shape = RoundedCornerShape(5.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { }
             .padding(horizontal = 20.dp, vertical = 3.dp)
-            .clickable {
-                isExpanded = !isExpanded
-            },
+            .combinedClickable(
+                onLongClick = { deleteTask(preferenceManager, taskResponse, context) },
+
+                onClick = {
+                    isExpanded = !isExpanded
+                }
+            )
+            ,
         elevation = 5.dp
     ) {
         Row(modifier = Modifier.padding(vertical = 5.dp)) {
@@ -162,7 +181,10 @@ fun TaskCard(taskResponse: TaskResponse, preferenceManager: PreferenceManager, c
 
                 modifier = Modifier.align(CenterVertically)
             )
-            Row(modifier = Modifier.animateContentSize().padding(1.dp).align(CenterVertically)) {
+            Row(modifier = Modifier
+                .animateContentSize()
+                .padding(1.dp)
+                .align(CenterVertically)) {
                 Text(
                     text = taskResponse.text,
                     maxLines = if(isExpanded) Int.MAX_VALUE else 1,
@@ -222,7 +244,7 @@ fun PlaceholderCard() {
                 highlightColor = Color.White,
             ),
         )) {
-        Text(text = "df", Modifier.padding(vertical = 15.dp))
+        Text(text = "df", Modifier.padding(vertical = 18.dp))
     }
 }
 
@@ -267,4 +289,28 @@ fun checkTask(preferenceManager: PreferenceManager, taskResponse: TaskResponse, 
 
             }
         )
+}
+
+fun deleteTask(preferenceManager: PreferenceManager, taskResponse: TaskResponse, context: Context) {
+    ApiService.retrofit.deleteTask("Bearer ${preferenceManager.readLoginPreference()}", taskResponse.id).enqueue(
+        object : Callback<Unit> {
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                if(response.isSuccessful) {
+                    Toast.makeText(context, "Успешно удалено", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    Toast.makeText(
+                        context,
+                        "Задача с указанным id не найдена",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
+            }
+
+        }
+    )
 }

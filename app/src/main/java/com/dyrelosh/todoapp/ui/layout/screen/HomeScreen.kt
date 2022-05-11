@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -50,7 +51,7 @@ fun HomeAct(navController: NavHostController) {
     )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 150.dp)
+        modifier = Modifier.padding(top = 150.dp).fillMaxSize()
     ) {
         Image(
             painter = painterResource(R.drawable.home_image),
