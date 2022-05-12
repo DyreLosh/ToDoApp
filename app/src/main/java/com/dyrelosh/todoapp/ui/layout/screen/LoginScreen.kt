@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
@@ -34,6 +36,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,7 +53,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.net.ssl.HttpsURLConnection
-@SuppressLint("StaticFieldLeak")
+@SuppressLint("StaticFieldLeak", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun LoginScreen(navController: NavHostController) {
     val context = LocalContext.current
@@ -100,8 +104,9 @@ fun LoginScreen(navController: NavHostController) {
             leadingIcon = { Icon(Icons.Filled.Lock, contentDescription = "")},
             modifier = Modifier
                 .padding(top = 10.dp, end = 40.dp, start = 40.dp)
-                .fillMaxWidth()
-        )
+                .fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation(),
+            )
         Text(
             text = stringResource(R.string.forgot_password_text_button),
             color = Yellow,
@@ -109,7 +114,9 @@ fun LoginScreen(navController: NavHostController) {
             modifier = Modifier.padding(top = 10.dp)
         )
         Scaffold(
-            bottomBar = { BottomBar(email, password, context, navController) }) {}
+            backgroundColor = Color.Transparent,
+            bottomBar = { BottomBar(email, password, context, navController) },
+        ) {}
     }
 
 }

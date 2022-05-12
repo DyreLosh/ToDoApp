@@ -124,7 +124,19 @@ fun RegisterScreen(navController: NavHostController) {
                 .padding(top = 10.dp, start = 40.dp, end = 40.dp)
                 .fillMaxWidth()
         )
-        Scaffold (bottomBar = { BottomRegisterBar(name, email, password, confirmPassword, context, navController) }) {}
+        Scaffold(
+            backgroundColor = Color.Transparent,
+            bottomBar = {
+                BottomRegisterBar(
+                    name,
+                    email,
+                    password,
+                    confirmPassword,
+                    context,
+                    navController
+                )
+            }
+        ) {}
 
 
     }

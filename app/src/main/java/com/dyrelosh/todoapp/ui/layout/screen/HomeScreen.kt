@@ -74,6 +74,7 @@ fun HomeAct(navController: NavHostController) {
                 .padding(start = 30.dp, end = 30.dp, top = 20.dp)
         )
         Scaffold(
+            backgroundColor = Color.Transparent,
             bottomBar = {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,

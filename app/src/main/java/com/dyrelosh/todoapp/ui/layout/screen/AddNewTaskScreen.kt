@@ -66,7 +66,9 @@ fun AddNewTaskScreen(navController: NavHostController) {
                 .height(100.dp)
         )
 
-        Scaffold(bottomBar = {
+        Scaffold(
+            backgroundColor = Color.Transparent,
+            bottomBar = {
             Button(
                 onClick = {
                     if(newText.value.isNotBlank()) {
@@ -93,7 +95,11 @@ fun AddNewTaskScreen(navController: NavHostController) {
                             }
 
                             override fun onFailure(call: Call<Unit>, t: Throwable) {
-                                Toast.makeText(context, t.localizedMessage, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(
+                                    context,
+                                    t.localizedMessage,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
                         }
@@ -102,7 +108,10 @@ fun AddNewTaskScreen(navController: NavHostController) {
 
                     }
                     else {
-                        AlertDialog.Builder(context).setPositiveButton("Ok", null).setMessage("Введите текст").create().show()
+                        AlertDialog.Builder(context).setPositiveButton(
+                            "Ok",
+                            null
+                        ).setMessage("Введите текст").create().show()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(backgroundColor = Yellow),

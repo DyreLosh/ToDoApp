@@ -1,5 +1,6 @@
 package com.dyrelosh.todoapp.ui.layout.screen
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.widget.Space
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +39,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -159,7 +162,10 @@ fun TaskCard(taskResponse: TaskResponse, preferenceManager: PreferenceManager, c
             .clickable { }
             .padding(horizontal = 20.dp, vertical = 3.dp)
             .combinedClickable(
-                onLongClick = { deleteTask(preferenceManager, taskResponse, context) },
+                onLongClick = {
+                    deleteTask(preferenceManager, taskResponse, context)
+
+                              },
 
                 onClick = {
                     isExpanded = !isExpanded
@@ -214,18 +220,40 @@ fun TopTasksBar(context:Context, mainNavController: NavController){
                 fontFamily = FontFamily(Font(R.font.poppins)),
                 modifier = Modifier.padding(start = 10.dp)
             )
-            Icon(
-                Icons.Filled.ExitToApp,
-                contentDescription = "",
-                tint = Color.Black,
-                modifier = Modifier
-                    .padding(end = 10.dp)
-                    .clickable {
-                        val preferenceManager = PreferenceManager(context)
-                        preferenceManager.deleteLoginPreference()
-                        mainNavController.popBackStack()
-                    }
-            )
+            Row() {
+                Icon(
+                    Icons.Filled.Info,
+                    contentDescription = "",
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .clickable {
+                            AlertDialog.Builder(context)
+                                .setTitle("Справка")
+                                .setMessage("Нажатие на чекбокс - отметка задачи, как выполненной." +
+                                        "\nДолгое нажатие на карточку  - удаление задачи" +
+                                        "\nНажатие на карточку - показывает весь текст задачи")
+                                .setPositiveButton("Хорошо", null)
+                                .create()
+                                .show()
+                        }
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Icon(
+                    Icons.Filled.ExitToApp,
+                    contentDescription = "",
+                    tint = Color.Black,
+                    modifier = Modifier
+                        .padding(end = 10.dp)
+                        .clickable {
+                            val preferenceManager = PreferenceManager(context)
+                            preferenceManager.deleteLoginPreference()
+                            mainNavController.popBackStack()
+                        }
+                )
+            }
+
         }
 
     }
